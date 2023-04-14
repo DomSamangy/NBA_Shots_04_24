@@ -16,24 +16,32 @@ Here is the link to the google drive folder: https://drive.google.com/file/d/1AA
 
 --- Data Dictionary
 
-- POSS: Number of possessions used by that player, in that play type, in that year.
-- FREQ: Frequency of play type used by that player, in that play type, in that year. (%)
-  - FREQ_PCTL: Percentile rank of play type frequency.
-  - Scale of 0 to 100 --- (0 relates to worst while 100 relates to best)
-- PPP: Points per possessions of that player, in that play type, in that year. (%)
-  - PPP_PCTL: Percentile rank of PPP variable. 
-  - Scale of 0 to 100 --- (0 relates to worst while 100 relates to best)
-- GP: Games Played
-- PTS: Points
-- FG: Field goals made
-- FGA: Field goals attempted
-- FG_PCT: Field goal percentage (%)
-- EFG_PCT: Effective field goal percentage (%)
-- SF_FREQ: Frequency of shooting fouls drawn (%)
-- FTA_FREQ: Frequency of free throws attempted (%)
-- AND1_FREQ: Frequency of and one plays made (%)
-- TOV_FREQ: Frequenyc of turnovers committed (%)
+- Self-Explanatory
+  - TEAM_NAME, PLAYER_NAME, POSITION_GROUP, POSITION, HOME_TEAM, AWAY_TEAM, 
+- SEASON_1 & SEASON_2: Season indicator variables
 
+- TEAM_ID: Frequency of play type used by that player, in that play type, in that year. (%)
+- PLAYER_ID: NBA's unique ID variable of that specific player in their API.
+- GAME_DATE: Date of the game (M-D-Y // Month-Date-Year).
+- GAME_ID: NBA's unique ID variable of that specific game in their API.
+- EVENT_TYPE: Character variable denoting a shot outcome (Made Shot // Missed Shot).
+- SHOT_MADE: True/False variable denoting a shot outcome (True // False).
+- ACTION_TYPE: Description of shot type (layup, dunk, jump shot, etc.).
+- SHOT_TYPE: Type of shot (2PT or 3PT).
+- BASIC_ZONE: Name of the court zone the shot took place in.
+  - Restricted Area, In the Paint (non-RA), Midrange, Left Corner 3, Right Corner 3, Above the Break, Backcourt.
+- ZONE_NAME: Name of the side of court the shot took place in.
+  -  left, left side center, center, right side center, right
+- ZONE_ABB: Abbreviation of the side of court.
+  -  (L), (LC), (C), (RC), (R).
+- ZONE_RANGE: Distance range of shot by zones.
+  - Less than 8 ft., 8-16 ft. 16-24 ft. 24+ ft.
+- LOC_X: X coordinate of the shot in the x, y plane of the court (0, 50).
+- LOC_Y: Y coordinate of the shot in the x, y plane of the court (0, 50).
+- SHOT_DISTANCE: Distance of the shot with respect to the center of the hoop, in feet.
+- QUARTER: Quarter of the game.
+- MINS_LEFT: Minutes remaining in the quarter.
+- SECS_LEFT: Seconds remaining in minute of the quarter.
 
 
 --- Snapshot of Data 
@@ -45,5 +53,3 @@ Here is the link to the google drive folder: https://drive.google.com/file/d/1AA
 
 ![PHI](https://user-images.githubusercontent.com/70119566/231919269-73ba4b19-03c3-4830-ba05-c28d390c47aa.jpg)
 
-
-- FREQ: Frequency of play type used by that player, in that play type, in that year. (%)
