@@ -43,4 +43,7 @@ Here is the link to the google drive folder: https://drive.google.com/file/d/1AA
 
 --- Example of Potential Data Viz
 
-![23_04_06_Markkanen](https://user-images.githubusercontent.com/70119566/231478790-981daa2e-9bf4-49a6-a2a6-2a0839ebb46d.jpg)
+![PHI](https://user-images.githubusercontent.com/70119566/231919269-73ba4b19-03c3-4830-ba05-c28d390c47aa.jpg)
+
+
+- FREQ: Frequency of play type used by that player, in that play type, in that year. (%)
