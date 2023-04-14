@@ -17,7 +17,7 @@ Here is the link to the google drive folder: https://drive.google.com/file/d/1AA
 --- Data Dictionary
 
 - Self-Explanatory
-  - TEAM_NAME, PLAYER_NAME, POSITION_GROUP, POSITION, HOME_TEAM, AWAY_TEAM, 
+  - TEAM_NAME, PLAYER_NAME, POSITION_GROUP, POSITION, HOME_TEAM, AWAY_TEAM
 - SEASON_1 & SEASON_2: Season indicator variables
 
 - TEAM_ID: Frequency of play type used by that player, in that play type, in that year. (%)
