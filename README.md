@@ -49,7 +49,7 @@ Here is the link to the google drive folder: https://drive.google.com/file/d/1pa
 ![Image 4-13-23 at 8 34 PM](https://user-images.githubusercontent.com/70119566/231919080-015186ad-daa7-446c-8db3-ac11fecc8484.JPG)
 
 
---- Example of Potential Data Viz
+--- Example of Potential Data Viz (See R Script Above for Code !)
 
 ![PHI](https://user-images.githubusercontent.com/70119566/231919269-73ba4b19-03c3-4830-ba05-c28d390c47aa.jpg)
 
