@@ -1,4 +1,4 @@
-# NBA Shot Location Data - 2016-2023
+# NBA Shot Location Data - 2004-2023
 
 NBA regular season shot location data from the 03-04 season to 22-23 w/ data viz example code.
 
