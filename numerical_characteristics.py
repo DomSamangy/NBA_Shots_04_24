@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import sympy as sp
+import matplotlib.pyplot as plt
 import math
 
 
@@ -80,6 +81,19 @@ class DiscreteCharacteristics:
         der = (sp.I**(-n))*sp.diff(mgf, t, n)
         moment = sp.lambdify(t, der)
         return float(sp.re(moment(0)))
+    
+    
+    def skewness(self): #коэффициент асимметрии
+        return self.central_moment(3)/(self.standard_deviation()**3)
+    
+    
+    def kurtosis(self): #коэффициент экцесса
+        return self.central_moment(4)/(self.standard_deviation()**4)
+    
+
+        
+
+        
         
 
 
@@ -92,6 +106,3 @@ class DiscreteCharacteristics:
 # print(c_f)
 # r_m = tmp.raw_moment_from_cf(1)
 # print(r_m)
-
-
-
