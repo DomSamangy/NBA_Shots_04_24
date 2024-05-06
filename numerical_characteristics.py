@@ -26,10 +26,6 @@ class DiscreteVariableDistribution:
     
 
 class DiscreteVarCharacteristics(DiscreteVariableDistribution):
-    def __init__(self, value, probability):
-        DiscreteVariableDistribution.__init__(self, value, probability)
-
-
     def raw_moment(self, n: int, digits_to_round: int = 2) -> float: 
         """ Returns the n-th raw moment """
         sum: float = 0
@@ -52,14 +48,14 @@ class DiscreteVarCharacteristics(DiscreteVariableDistribution):
         return round(sum, digits_to_round)
 
 
-    def dispersion(self, digits_to_round: int = 2) -> float:
-        """ Returns dispersion """
+    def variance(self, digits_to_round: int = 2) -> float:
+        """ Returns variance """
         return self.central_moment(2, digits_to_round)
 
 
-    def standard_deviation(self, digits_to_round: int): 
+    def standard_deviation(self, digits_to_round: int = 2): 
         """ Returns the standard deviation """
-        return round(math.sqrt(self.dispersion(digits_to_round)), digits_to_round)
+        return round(math.sqrt(self.variance(digits_to_round)), digits_to_round)
     
     
     def moment_generating_function(self) -> sp.core.add.Add:
@@ -80,7 +76,7 @@ class DiscreteVarCharacteristics(DiscreteVariableDistribution):
         return sum
     
     
-    def raw_moment_from_mgf(self, n: int, digits_to_round: int) -> float: 
+    def raw_moment_from_mgf(self, n: int, digits_to_round: int = 2) -> float: 
         """ Returns the n-th raw moment by deriving the moment-generating function """
         t = sp.Symbol('t')
         mgf = self.moment_generating_function()
@@ -89,7 +85,7 @@ class DiscreteVarCharacteristics(DiscreteVariableDistribution):
         return round(moment(0), digits_to_round)
     
     
-    def raw_moment_from_cf(self, n: int, digits_to_round: int) -> float: 
+    def raw_moment_from_cf(self, n: int, digits_to_round: int = 2) -> float: 
         """ Returns the n-th raw moment by deriving the characteristic function """
         t = sp.Symbol('t')
         mgf = self.characteristic_function()
@@ -98,14 +94,14 @@ class DiscreteVarCharacteristics(DiscreteVariableDistribution):
         return round(float(sp.re(moment(0))), digits_to_round)
     
     
-    def skewness(self, digits_to_round: int) -> float: 
+    def skewness(self, digits_to_round: int = 2) -> float: 
         """ Returns skewness """
         return round(self.central_moment(3, digits_to_round)/(self.standard_deviation(digits_to_round)**3), digits_to_round)
     
     
-    def kurtosis(self, digits_to_round: int) -> float: 
+    def kurtosis(self, digits_to_round: int = 2) -> float: 
         """ Returns kurtosis """
-        return round(self.central_moment(4, digits_to_round)/(self.standard_deviation(digits_to_round)**4), digits_to_round)
+        return round(self.central_moment(4, digits_to_round)/(self.variance(digits_to_round)**2), digits_to_round)
 
 
     def cdf(self) -> list[np.ndarray, list]: 
@@ -154,20 +150,18 @@ class ContinuousVariableDistribution:
             tmp_lower = -numerical_inf
         if self.upper_bound == oo:
             tmp_higher = numerical_inf
-        for i in np.linspace(tmp_lower, tmp_higher, int(1e4)):
-            pdf_i = sp.lambdify(x, self.pdf)
-            if pdf_i(i) < 0:
-                raise ValueError('pdf value must be non-negative')
+        # for i in np.arange(tmp_lower, tmp_higher, int(1e305)):
+        #     print(i)
+            #pdf_i = sp.lambdify(x, self.pdf)
+            #print(i, pdf_i(i))
+            # if pdf_i(i) < 0:
+            #     raise ValueError('pdf value must be non-negative')
             
 
 class ContinuousVarCharacteristics(ContinuousVariableDistribution):
-    def __init__(self, pdf: sp.core.add.Add, value_range: list):
-        ContinuousVariableDistribution.__init__(self, pdf, value_range)
-    
-    
     def cdf(self):
         tmp = sp.integrals.meijerint.meijerint_definite(self.pdf, x, self.lower_bound, x)[0]
-        func = sp.expand(tmp)
+        func = sp.expand(tmp, rational=True)
         return func
     
     
@@ -179,7 +173,63 @@ class ContinuousVarCharacteristics(ContinuousVariableDistribution):
         return self.raw_moment(1, digits_to_round)
     
     
+    def central_moment(self, n: int, digits_to_round: int = 2):
+        return round(sp.integrals.meijerint.meijerint_definite((x-self.expectancy(digits_to_round))**n * self.pdf, x, self.lower_bound, self.upper_bound)[0], digits_to_round)
+    
+
+    def variance(self, digits_to_round: int = 2):
+        return self.central_moment(2, digits_to_round)
+
+
+    def standard_deviation(self, digits_to_round: int = 2):
+        return round(math.sqrt(self.variance(digits_to_round)), digits_to_round)
+
+
+    def moment_generating_function(self):
+        t = sp.Symbol('t', imaginary=False)
+        tmp =  sp.integrals.meijerint.meijerint_definite(sp.exp(t * x) * self.pdf, x, self.lower_bound, self.upper_bound)
+        print(tmp)
+        return
+        func = sp.simplify(tmp[0])
+        return func
+
+
+    def characteristic_function(self):
+        t = sp.Symbol('t', imaginary=False)
+        tmp =  sp.integrals.meijerint.meijerint_definite(sp.exp(sp.I * t * x) * self.pdf, x, self.lower_bound, self.upper_bound)
+        func = sp.simplify(tmp[0])
+        return func
+
+
+    def raw_moment_from_mgf(self, n: int, digits_to_round: int = 2) -> float: 
+        """ Returns the n-th raw moment by deriving the moment-generating function """
+        t = sp.Symbol('t', imaginary=False)
+        mgf = self.moment_generating_function()
+        der = sp.diff(mgf, t, n)
+        moment = sp.lambdify(t, der)
+        return round(moment(0), digits_to_round)
+
+
+    def raw_moment_from_cf(self, n: int, digits_to_round: int = 2):
+        t = sp.Symbol('t', imaginary=False)
+        mgf = self.characteristic_function()
+        der = (sp.I**(-n))*sp.diff(mgf, t, n)
+        moment = sp.lambdify(t, der)
+        return round(float(sp.re(moment(0))), digits_to_round)
         
+
+    def skewness(self, digits_to_round: int = 2) -> float: 
+        """ Returns skewness """
+        return round(self.central_moment(3, digits_to_round)/(self.standard_deviation(digits_to_round)**3), digits_to_round)
+    
+    
+    def kurtosis(self, digits_to_round: int = 2) -> float: 
+        """ Returns kurtosis """
+        return round(self.central_moment(4, digits_to_round)/(self.variance(digits_to_round)**2), digits_to_round)
+
+    
+    def probability_in_range(self, a: float, b: float, digits_to_round: int = 2) -> float:
+        return round(sp.integrals.meijerint.meijerint_definite(self.pdf, x, a, b)[0], digits_to_round)
         
         
         
@@ -188,8 +238,9 @@ class ContinuousVarCharacteristics(ContinuousVariableDistribution):
 
 
 if __name__ == '__main__':
-    b, a, x = sp.symbols('b, a, x',positive=True)
-    lam = 2
-    exponential_distr = lam*sp.exp(-lam*x)
-    tmp = ContinuousVarCharacteristics(exponential_distr, [0, oo])
-    print()    
+
+    x = sp.symbols('x', positive=True)
+    lam = 1/15
+    distr = lam*sp.exp(-lam*x)
+    cvd = ContinuousVarCharacteristics(distr, [0, oo])
+    
