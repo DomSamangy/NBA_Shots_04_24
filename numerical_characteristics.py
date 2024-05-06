@@ -2,11 +2,13 @@ import pandas as pd
 import numpy as np
 import sympy as sp
 import math
+from sympy import oo
 
 
+numerical_inf = 1.79769313e+307
 
 
-class DiscreteCharacteristics:
+class DiscreteVariableDistribution:
     def __init__(self, value: list, probability: list):
         self.value = value
         self.probability = probability
@@ -17,15 +19,15 @@ class DiscreteCharacteristics:
 
     def validate_parameters(self):
         if self.value_array_length!= self.probability_array_length:
-            raise ValueError('ERROR: array lengths must be equal to each other')
-        if 0.9999 <= sum(self.probability) <= 1.0001:
-            raise ValueError('ERROR: probability sum must be equal to 1')
+            raise ValueError('array lengths must be equal to each other')
+        if round(sum(self.probability), 4) != 1:
+            raise ValueError('probability sum must be equal to 1')
 
     
 
-class Discrete1D(DiscreteCharacteristics):
+class DiscreteVarCharacteristics(DiscreteVariableDistribution):
     def __init__(self, value, probability):
-        DiscreteCharacteristics.__init__(self, value, probability)
+        DiscreteVariableDistribution.__init__(self, value, probability)
 
 
     def raw_moment(self, n: int, digits_to_round: int = 2) -> float: 
@@ -132,12 +134,62 @@ class Discrete1D(DiscreteCharacteristics):
         return [x_axis, y_axis]
         
 
+
+
+class ContinuousVariableDistribution:
+    def __init__(self, pdf: sp.core.add.Add, value_range: list):
+        self.pdf = pdf
+        self.lower_bound = value_range[0]
+        self.upper_bound = value_range[1]
+        self.pdf_int = sp.integrals.meijerint.meijerint_definite(self.pdf, x, self.lower_bound, self.upper_bound) 
+        self.validate_parameters()
+    
+    
+    def validate_parameters(self):
+        if round(self.pdf_int[0], 4) != 1:
+            raise ValueError('integral of pdf should be equal to 1 from negative infinity to positive infinity')
+        tmp_lower = self.lower_bound
+        tmp_higher = self.upper_bound
+        if self.lower_bound == -oo:
+            tmp_lower = -numerical_inf
+        if self.upper_bound == oo:
+            tmp_higher = numerical_inf
+        for i in np.linspace(tmp_lower, tmp_higher, int(1e4)):
+            pdf_i = sp.lambdify(x, self.pdf)
+            if pdf_i(i) < 0:
+                raise ValueError('pdf value must be non-negative')
+            
+
+class ContinuousVarCharacteristics(ContinuousVariableDistribution):
+    def __init__(self, pdf: sp.core.add.Add, value_range: list):
+        ContinuousVariableDistribution.__init__(self, pdf, value_range)
+    
+    
+    def cdf(self):
+        tmp = sp.integrals.meijerint.meijerint_definite(self.pdf, x, self.lower_bound, x)[0]
+        func = sp.expand(tmp)
+        return func
+    
+    
+    def raw_moment(self, n: int, digits_to_round: int = 2):
+        return(round(sp.integrals.meijerint.meijerint_definite(x**n * self.pdf, x, self.lower_bound, self.upper_bound)[0], digits_to_round))
+    
+    
+    def expectancy(self, digits_to_round: int = 2):
+        return self.raw_moment(1, digits_to_round)
+    
+    
         
         
+        
+        
+
+
+
 
 if __name__ == '__main__':
-    tmp = Discrete1D([1, 2, 3], [0.5, 0.3, 0.2])
-    
-    print(len)
-
-
+    b, a, x = sp.symbols('b, a, x',positive=True)
+    lam = 2
+    exponential_distr = lam*sp.exp(-lam*x)
+    tmp = ContinuousVarCharacteristics(exponential_distr, [0, oo])
+    print()    
