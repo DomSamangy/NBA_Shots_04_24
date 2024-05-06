@@ -1,8 +1,8 @@
-# NBA Shot Location Data - 2004-2023
+# NBA Shot Location Data - 2004-2024
 
-NBA regular season shot location data from the 03-04 season to 22-23 w/ data viz example code.
+NBA regular season shot location data from the 03-04 season to 23-24 w/ data viz example code.
 
-As I know pulling data from sites can be a headache at times, I've pulled all NBA regular season shots from 2004-2023 seasons into a single csv file. I've also included a signle csv file for each individual season in case you were looking to study only specific seasons. Compared to the play type dataset, this is data more raw and will invovle more wrangling. But! I've attached an R script that shows how to create the two shot charts at the end of the page! Hoping it can help inspire some cool projects!
+As I know pulling data from sites can be a headache at times, I've pulled all NBA regular season shots from 2004-2024 seasons into a single csv file. I've also included a signle csv file for each individual season in case you were looking to study only specific seasons. Compared to the play type dataset, this is data more raw and will invovle more wrangling. But! I've attached an R script that shows how to create the two shot charts at the end of the page! Hoping it can help inspire some cool projects!
 
 
 --- Data Source
@@ -11,7 +11,7 @@ NBA.com
 
 --- Link to Data 
 
-Here is the link to the google drive folder: https://drive.google.com/file/d/1paCz-3DwEPFfSR1KP6cKslzKM3FPQY1p/view?usp=sharing
+Here is the link to the google drive folder: https://drive.google.com/file/d/1_7YIYr4kasLzHMTQzyaQ9-lMUrK6n5Dm/view?usp=sharing
 
 
 --- Data Dictionary
