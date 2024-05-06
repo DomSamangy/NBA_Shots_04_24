@@ -181,7 +181,7 @@ plot_court = function(court_theme = court_themes$light, use_short_three = FALSE)
 ```{r}
 # ------------------------- Load the Dataset
 
-shots_data <- read_csv("NBA_2004_2023_Shots.csv")
+shots_data <- read_csv("NBA_2004_2024_Shots.csv")
 
 
 # ------------------------- Filter for Single Game Shots by Date & Player Name
@@ -247,7 +247,7 @@ ggsave("Player_Shot_Chart.png", height = 6, width = 6, dpi = "retina")
 ```{r}
 # ------------------------- Load the Dataset
 
-shots_data <- read_csv("NBA_2004_2023_Shots.csv")
+shots_data <- read_csv("NBA_2004_2024_Shots.csv")
 
 
 # ------------------------- Filter for Single Game Shots by Date & Team Name
