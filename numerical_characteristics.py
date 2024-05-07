@@ -1,4 +1,3 @@
-import pandas as pd
 import numpy as np
 import sympy as sp
 import math
@@ -188,8 +187,6 @@ class ContinuousVarCharacteristics(ContinuousVariableDistribution):
     def moment_generating_function(self):
         t = sp.Symbol('t', imaginary=False)
         tmp =  sp.integrals.meijerint.meijerint_definite(sp.exp(t * x) * self.pdf, x, self.lower_bound, self.upper_bound)
-        print(tmp)
-        return
         func = sp.simplify(tmp[0])
         return func
 
@@ -230,7 +227,34 @@ class ContinuousVarCharacteristics(ContinuousVariableDistribution):
     
     def probability_in_range(self, a: float, b: float, digits_to_round: int = 2) -> float:
         return round(sp.integrals.meijerint.meijerint_definite(self.pdf, x, a, b)[0], digits_to_round)
+    
+    
+
+    
+class Sample:
+    def __init__(self, sample : list):
+        self.sample = sample
+        self.n = len(self.sample)
         
+        
+    def sample_mean(self, digits_to_round : int = 2):
+        return round(np.mean(self.sample), digits_to_round)
+    
+    
+    def biased_sample_variance(self, digits_to_round : int = 2):
+        b_var = 0
+        for x_i in self.sample:
+            b_var += (x_i - self.sample_mean(digits_to_round)) ** 2
+        return round(b_var/self.n, digits_to_round)
+    
+    
+    def unbiased_sample_variance(self, digits_to_round : int = 2):
+        u_var = 0
+        for x_i in self.sample:
+            u_var += (x_i - self.sample_mean(digits_to_round)) ** 2
+        return round(u_var/(self.n-1), digits_to_round)
+        
+
         
         
 
@@ -238,9 +262,13 @@ class ContinuousVarCharacteristics(ContinuousVariableDistribution):
 
 
 if __name__ == '__main__':
-
     x = sp.symbols('x', positive=True)
     lam = 1/15
     distr = lam*sp.exp(-lam*x)
     cvd = ContinuousVarCharacteristics(distr, [0, oo])
+    cat_sample = list(np.random.randint(1, 20, size=50))
+    sample_characteristics = Sample(cat_sample)
+    print(sample_characteristics)
+    
+    
     
