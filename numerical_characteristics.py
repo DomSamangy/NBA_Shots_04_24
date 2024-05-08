@@ -1,7 +1,9 @@
 import numpy as np
 import sympy as sp
 import math
+from scipy import stats
 from sympy import oo
+from collections import Counter
 
 
 numerical_inf = 1.79769313e+307
@@ -143,12 +145,12 @@ class ContinuousVariableDistribution:
     def validate_parameters(self):
         if round(self.pdf_int[0], 4) != 1:
             raise ValueError('integral of pdf should be equal to 1 from negative infinity to positive infinity')
-        tmp_lower = self.lower_bound
-        tmp_higher = self.upper_bound
-        if self.lower_bound == -oo:
-            tmp_lower = -numerical_inf
-        if self.upper_bound == oo:
-            tmp_higher = numerical_inf
+        # tmp_lower = self.lower_bound
+        # tmp_higher = self.upper_bound
+        # if self.lower_bound == -oo:
+        #     tmp_lower = -numerical_inf
+        # if self.upper_bound == oo:
+        #     tmp_higher = numerical_inf
         # for i in np.arange(tmp_lower, tmp_higher, int(1e305)):
         #     print(i)
             #pdf_i = sp.lambdify(x, self.pdf)
@@ -233,7 +235,7 @@ class ContinuousVarCharacteristics(ContinuousVariableDistribution):
     
 class Sample:
     def __init__(self, sample : list):
-        self.sample = sample
+        self.sample = sorted(sample)
         self.n = len(self.sample)
         
         
@@ -245,19 +247,33 @@ class Sample:
         b_var = 0
         for x_i in self.sample:
             b_var += (x_i - self.sample_mean(digits_to_round)) ** 2
-        return round(b_var/self.n, digits_to_round)
+        return round(b_var / self.n, digits_to_round)
     
     
     def unbiased_sample_variance(self, digits_to_round : int = 2):
         u_var = 0
         for x_i in self.sample:
             u_var += (x_i - self.sample_mean(digits_to_round)) ** 2
-        return round(u_var/(self.n-1), digits_to_round)
+        return round(u_var / (self.n-1), digits_to_round)
+    
+    
+    def frequency(self, digits_to_round : int = 2):
+        n_i_dict = dict(sorted(Counter(self.sample).items()))
+        frequency_dict = n_i_dict.copy()
+        for key, value in n_i_dict.items():
+            frequency_dict[key] = round(frequency_dict[key] / self.n, digits_to_round)
+        return [n_i_dict, frequency_dict]
+    
+    
+    def empirical_cdf(self):
+        return stats.ecdf(self.sample).cdf
+    
+    
+    def confidence_interval_for_mean(self, digits_to_round : int = 2):
+        t_student = stats.t.ppf(1 - 0.025, self.n - 1)
+        right_side = t_student * math.sqrt(self.unbiased_sample_variance(digits_to_round)) / math.sqrt(self.n)
+        return [round(self.sample_mean(digits_to_round) - right_side, digits_to_round), round(self.sample_mean(digits_to_round) + right_side, digits_to_round)]
         
-
-        
-        
-
 
 
 
@@ -266,9 +282,13 @@ if __name__ == '__main__':
     lam = 1/15
     distr = lam*sp.exp(-lam*x)
     cvd = ContinuousVarCharacteristics(distr, [0, oo])
-    cat_sample = list(np.random.randint(1, 20, size=50))
+    cat_sample = [4, 6, 19, 1, 3, 16, 6, 15, 6, 9, 5, 1, 9, 8, 3, 11, 11, 10, 6, 8, 14, 11, 10, 4, 1, 4, 4, 5, 2, 19, 10, 4, 8, 17, 18, 19, 17, 19, 16, 8, 9, 18, 19, 5, 4, 6, 4, 3, 18, 2]
+    #cat_sample = list(np.random.randint(1, 20, size=50))
     sample_characteristics = Sample(cat_sample)
-    print(sample_characteristics)
+   
+    
+    
+    
     
     
     
